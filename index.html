@@ -115,10 +115,11 @@
                 return;
             }
 
-            const totalNicotineNeeded = (nicStrength * bottleSize) / nicBase;
-            const vgAmount = (vgRatio / 100) * bottleSize;
-            const pgAmount = bottleSize - vgAmount;
             const flavorAmount = (flavorPercent / 100) * bottleSize;
+            const totalNicotineNeeded = (nicStrength * bottleSize) / nicBase;
+            const totalPGNeeded = totalNicotineNeeded + flavorAmount;
+            const vgAmount = (vgRatio / 100) * bottleSize;
+            const pgAmount = bottleSize - vgAmount - totalPGNeeded; // Total PG minus nicotine base and flavor amount
 
             const resultText = `
                 <strong>Juice Name:</strong> ${juiceName}<br>
