@@ -1,11 +1,53 @@
 const flavorSuggestions = [
-    "Lime Tahity (FA)",
-    "Strawberry (CAP)",
-    "Vanilla Custard (TPA)",
-    "WS-23",
-    "WS-5",
-    // Add more popular flavors here
+    // Capella
+    "Vanilla Custard (Capella)",
+    "Strawberry Ripe (Capella)",
+    "Lemon Meringue Pie (Capella)",
+    "Cake Batter (Capella)",
+    "Sweet Cream (Capella)",
+    "Caramel (Capella)",
+    "Banana Cream (Capella)",
+    "Peach (Capella)",
+    "Butter Cream (Capella)",
+    "French Vanilla (Capella)",
+
+    // Flavorah
+    "Berry Blend (Flavorah)",
+    "Frosting (Flavorah)",
+    "Coconut (Flavorah)",
+    "Custard (Flavorah)",
+    "Strawberry (Flavorah)",
+    "Gingerbread (Flavorah)",
+    "Sweet Dough (Flavorah)",
+    "Vanilla Bean (Flavorah)",
+    "Mint (Flavorah)",
+    "Tropical Citrus (Flavorah)",
+
+    // The Flavor Apprentice (TFA)
+    "Ripe Strawberry (TFA)",
+    "Vanilla Custard (TFA)",
+    "Cake Batter (TFA)",
+    "Banana Cream (TFA)",
+    "Lemonade (TFA)",
+    "Blueberry Extra (TFA)",
+    "Graham Cracker (TFA)",
+    "Sweetener (TFA)",
+    "Chocolate Double (TFA)",
+    "Menthol (TFA)",
+
+    // FLAVOUR ART
+    "Apple Filling (FLV)",
+    "Cream (FLV)",
+    "Maple Bar (FLV)",
+    "Strawberry (FLV)",
+    "Vanilla Cream (FLV)",
+    "Cucumber (FLV)",
+    "Milk (FLV)",
+    "Peach (FLV)",
+    "Caramel (FLV)",
+    "Chocolate (FLV)"
 ];
+
 
 let flavorCount = 0;
 let recipes = [];
