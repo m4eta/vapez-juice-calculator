@@ -50,6 +50,7 @@ body {
     border-radius: 8px;
     display: block;
     margin: 0 auto;
+    max-width: 100%; /* Ensure the image doesn't overflow */
 }
 
 .input-field input {
@@ -57,8 +58,27 @@ body {
     border: 1px solid #e91e63; /* Pink outline */
 }
 
-#saveLoadButtons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .input-field {
+        margin-bottom: 10px;
+    }
+
+    #results {
+        margin-top: 20px;
+    }
+
+    #saveLoadButtons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #saveLoadButtons button {
+        width: 100%;
+    }
 }
