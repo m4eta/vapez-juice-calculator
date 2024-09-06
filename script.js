@@ -4,6 +4,11 @@ const flavorSuggestions = [
     "WS-5",
     "Koolada",
 
+    // Flavrz Flavour shots
+    "Raspberry BOMB (Flvrz)",
+    "ASAP Grape (Flvrz)",
+    "Blackberry Pomegranate Cherry ICE (Flvrz)",
+    
     // Capella
     "Vanilla Custard (Capella)",
     "Strawberry Ripe (Capella)",
