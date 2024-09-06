@@ -2,11 +2,8 @@ body {
     background-color: #2e2e2e; /* Dark grey background */
     color: #ffffff; /* White text */
     font-family: 'Roboto', sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
     margin: 0;
+    overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
 .container {
@@ -15,6 +12,7 @@ body {
     background-color: #333333; /* Slightly lighter dark grey */
     padding: 20px;
     border-radius: 8px;
+    margin-top: 60px; /* Space for sticky header */
 }
 
 .title {
@@ -23,13 +21,16 @@ body {
     text-align: center;
 }
 
-.btn {
-    background-color: #6200ea; /* Material Indigo */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #333333; /* Dark grey for header */
     color: #ffffff;
-}
-
-.btn:hover {
-    background-color: #3700b3; /* Darker Indigo */
+    padding: 10px;
+    text-align: center;
+    z-index: 1000;
 }
 
 .results {
@@ -50,7 +51,6 @@ body {
     border-radius: 8px;
     display: block;
     margin: 0 auto;
-    max-width: 100%; /* Ensure the image doesn't overflow */
 }
 
 .input-field input {
@@ -58,27 +58,8 @@ body {
     border: 1px solid #e91e63; /* Pink outline */
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-        padding: 15px;
-    }
-
-    .input-field {
-        margin-bottom: 10px;
-    }
-
-    #results {
-        margin-top: 20px;
-    }
-
-    #saveLoadButtons {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    #saveLoadButtons button {
-        width: 100%;
-    }
+#saveLoadButtons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
 }
