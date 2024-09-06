@@ -23,7 +23,7 @@
                     </div>
                     <div class="input-field col s12 m6">
                         <input id="nic_strength" type="number" class="validate" value="6">
-                        <label for="nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
+                        <label for "nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
                     </div>
                     <div class="input-field col s12 m6">
                         <input id="nic_base" type="number" class="validate" value="100">
@@ -47,9 +47,14 @@
             <h2>Results</h2>
             <p id="resultText" class="card-panel">Your results will be displayed here.</p>
         </div>
+
+        <!-- Recipe management buttons -->
         <div id="saveLoadButtons">
-            <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Load Recipe</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import Recipes</button>
+        </div>
+
+        <div id="exportButtons">
+            <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export All Recipes (JSON)</button>
         </div>
     </div>
 
