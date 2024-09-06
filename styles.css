@@ -21,18 +21,6 @@ body {
     text-align: center;
 }
 
-.header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #333333; /* Dark grey for header */
-    color: #ffffff;
-    padding: 10px;
-    text-align: center;
-    z-index: 1000;
-}
-
 .results {
     margin-top: 30px;
     background-color: #424242; /* Slightly lighter dark grey */
@@ -58,8 +46,37 @@ body {
     border: 1px solid #e91e63; /* Pink outline */
 }
 
-#saveLoadButtons {
+.input-field label {
+    color: #ffffff; /* White label text */
+}
+
+.btn {
+    background-color: #e91e63; /* Material Pink */
+    color: #ffffff; /* White text */
+}
+
+.btn:hover {
+    background-color: #d81b60; /* Darker pink on hover */
+}
+
+#saveLoadButtons,
+#exportButtons {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+}
+
+#savedRecipesContainer {
+    margin-top: 20px;
+}
+
+select {
+    background-color: #333333; /* Dark grey for dropdown */
+    color: #ffffff; /* White text */
+    border: 1px solid #e91e63; /* Pink border */
+}
+
+select option {
+    background-color: #333333; /* Dark grey for options */
+    color: #ffffff; /* White text */
 }

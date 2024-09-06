@@ -4,11 +4,6 @@ const flavorSuggestions = [
     "WS-5",
     "Koolada",
 
-    // Flavrz Flavor Shots
-    "ASAP Grape (FLVZ)",
-    "Raspberry BOMB (FLVZ)",
-    "Blackberry Pomegranate Cherry ICE (FLVZ)",
-    
     // Capella
     "Vanilla Custard (Capella)",
     "Strawberry Ripe (Capella)",
@@ -64,12 +59,6 @@ let recipes = [];
 
 window.onload = function () {
     addFlavor(); // Add one default flavor on page load
-    M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
-        data: flavorSuggestions.reduce((obj, flavor) => {
-            obj[flavor] = null;
-            return obj;
-        }, {})
-    });
 
     // Initialize event listener for remove buttons
     document.getElementById('flavorsContainer').addEventListener('click', function (event) {
@@ -79,13 +68,30 @@ window.onload = function () {
         }
     });
 
+    // Initialize event listener for save button
+    document.getElementById('saveRecipeButton').addEventListener('click', saveRecipe);
+
     // Initialize event listener for delete recipe button
     document.getElementById('results').addEventListener('click', function (event) {
         if (event.target && event.target.matches('#deleteRecipeButton')) {
             deleteRecipe();
         }
     });
+
+    // Initialize event listener for apply recipe button
+    document.getElementById('applyRecipeButton').addEventListener('click', applyRecipe);
+
+    // Initialize flavor suggestions for autocomplete
+    M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
+        data: flavorSuggestions.reduce((acc, flavor) => {
+            acc[flavor] = null;
+            return acc;
+        }, {})
+    });
 };
+    // Initialize event listener for apply recipe button
+    document.getElementById('applyRecipeButton').addEventListener('click', applyRecipe);
+
 
 function addFlavor() {
     const container = document.getElementById('flavorsContainer');
@@ -106,10 +112,11 @@ function addFlavor() {
     `;
     container.appendChild(flavorDiv);
 
+    // Reinitialize autocomplete for new flavor inputs
     M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
-        data: flavorSuggestions.reduce((obj, flavor) => {
-            obj[flavor] = null;
-            return obj;
+        data: flavorSuggestions.reduce((acc, flavor) => {
+            acc[flavor] = null;
+            return acc;
         }, {})
     });
 }
@@ -138,6 +145,8 @@ function calculateResults() {
     // Calculate total flavor amount and deduct from PG
     let totalFlavorAmount = 0;
     let flavorText = '';
+    let flavorsDetail = '';
+
     for (let i = 1; i <= flavorCount; i++) {
         const flavorPercentInput = document.getElementById(`flavor_percent_${i}`);
         const flavorNameInput = document.getElementById(`flavor_name_${i}`);
@@ -148,7 +157,7 @@ function calculateResults() {
             totalFlavorAmount += flavorAmount;
 
             const flavorName = flavorNameInput.value || 'Unnamed Flavor';
-            flavorText += `<strong>${flavorName}:</strong> ${flavorAmount.toFixed(2)} ml<br>`;
+            flavorsDetail += `<strong>${flavorName}:</strong> ${flavorAmount.toFixed(2)} ml<br>`;
         }
     }
 
@@ -162,19 +171,59 @@ function calculateResults() {
 
     const resultText = `
         <strong>Total Nicotine Base Needed:</strong> ${totalNicotineNeeded.toFixed(2)} ml<br>
-        ${flavorText}
+        ${flavorsDetail}
         <strong>PG Amount:</strong> ${pgAmount.toFixed(2)} ml<br>
         <strong>VG Amount:</strong> ${vgAmount.toFixed(2)} ml
     `;
     document.getElementById('resultText').innerHTML = resultText;
 }
 
-function updateRecipeList(savedRecipes) {
-    // Clear the previous recipe list
-    const recipeSelect = document.getElementById('recipeSelect');
-    recipeSelect.innerHTML = '';
+function saveRecipe() {
+    const recipeName = prompt('Enter recipe name:') || '';
 
-    // Populate the dropdown with the updated recipe list
+    // If user cancels or provides an empty name, do not save the recipe
+    if (!recipeName.trim()) {
+        alert('Recipe name is required.');
+        return;
+    }
+
+    const vgRatio = parseFloat(document.getElementById('vg_ratio').value);
+    const nicStrength = parseFloat(document.getElementById('nic_strength').value);
+    const nicBase = parseFloat(document.getElementById('nic_base').value);
+    const bottleSize = parseFloat(document.getElementById('bottle_size').value);
+
+    const flavors = [];
+    for (let i = 1; i <= flavorCount; i++) {
+        const flavorName = document.getElementById(`flavor_name_${i}`).value || 'Unnamed Flavor';
+        const flavorPercent = parseFloat(document.getElementById(`flavor_percent_${i}`).value);
+        flavors.push({ name: flavorName, percent: flavorPercent });
+    }
+
+    const recipe = {
+        name: recipeName,
+        vg_ratio: vgRatio,
+        nic_strength: nicStrength,
+        nic_base: nicBase,
+        bottle_size: bottleSize,
+        flavors: flavors
+    };
+
+    recipes.push(recipe);
+    updateRecipeList(recipes);
+
+    // Set the newly saved recipe as selected
+    const newIndex = recipes.length - 1;
+    document.getElementById('savedRecipes').value = newIndex;
+    M.FormSelect.init(document.querySelectorAll('select')); // Reinitialize Materialize select element
+
+    alert('Recipe saved!');
+}
+
+
+function updateRecipeList(savedRecipes) {
+    const recipeSelect = document.getElementById('savedRecipes');
+    recipeSelect.innerHTML = '<option value="" disabled selected>Choose your recipe</option>';
+
     savedRecipes.forEach((recipe, index) => {
         const option = document.createElement('option');
         option.value = index;
@@ -198,7 +247,14 @@ function loadRecipe() {
             recipes = jsonData; // Set recipes with the data from the file
 
             alert('Recipes imported!');
-            updateRecipeList(recipes); // Update the dropdown with imported recipes
+            updateRecipeList(recipes);
+
+            // Select the first recipe from the imported list
+            if (recipes.length > 0) {
+                const recipeSelect = document.getElementById('savedRecipes');
+                recipeSelect.value = 0; // Select the first recipe
+                M.FormSelect.init(recipeSelect); // Reinitialize Materialize select element
+            }
         };
 
         reader.readAsText(file);
@@ -208,7 +264,7 @@ function loadRecipe() {
 }
 
 function applyRecipe() {
-    const selectedIndex = document.getElementById('recipeSelect').value;
+    const selectedIndex = document.getElementById('savedRecipes').value;
     const recipe = recipes[selectedIndex];
 
     document.getElementById('vg_ratio').value = recipe.vg_ratio;
@@ -226,7 +282,6 @@ function applyRecipe() {
     });
 
     calculateResults();
-    alert('Recipe applied!');
 }
 
 function exportRecipes() {
@@ -247,7 +302,7 @@ function exportRecipes() {
 }
 
 function deleteRecipe() {
-    const selectedIndex = document.getElementById('recipeSelect').value;
+    const selectedIndex = document.getElementById('savedRecipes').value;
 
     if (selectedIndex < 0 || selectedIndex >= recipes.length) {
         alert('Invalid selection');
@@ -259,5 +314,4 @@ function deleteRecipe() {
     alert('Recipe deleted!');
 
     updateRecipeList(recipes);
-    localStorage.setItem('recipes', JSON.stringify(recipes));
 }

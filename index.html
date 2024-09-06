@@ -23,7 +23,7 @@
                     </div>
                     <div class="input-field col s12 m6">
                         <input id="nic_strength" type="number" class="validate" value="6">
-                        <label for "nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
+                        <label for="nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
                     </div>
                     <div class="input-field col s12 m6">
                         <input id="nic_base" type="number" class="validate" value="100">
@@ -48,13 +48,25 @@
             <p id="resultText" class="card-panel">Your results will be displayed here.</p>
         </div>
 
+        <!-- Saved Recipes Dropdown -->
+        <div id="savedRecipesContainer">
+            <label for="savedRecipes">Saved Recipes</label>
+            <select id="savedRecipes" class="browser-default">
+                <option value="" disabled selected>Choose your recipe</option>
+                <!-- Options will be added dynamically -->
+            </select>
+        </div>
+
         <!-- Recipe management buttons -->
         <div id="saveLoadButtons">
+            <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
             <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import Recipes</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply Recipe</button>
         </div>
 
         <div id="exportButtons">
             <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export All Recipes (JSON)</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="deleteRecipe()">Delete Recipe</button>
         </div>
     </div>
 
