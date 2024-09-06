@@ -65,21 +65,31 @@ function calculateResults() {
 
     // Nicotine needed (since nic base is PG-based)
     const totalNicotineNeeded = (nicStrength * bottleSize) / nicBase;
+    console.log('Total Nicotine Needed:', totalNicotineNeeded);
 
     // Calculate total flavor amount and deduct from PG
     let totalFlavorAmount = 0;
     let flavorText = '';
     for (let i = 1; i <= flavorCount; i++) {
-        const flavorPercent = parseFloat(document.getElementById(`flavor_percent_${i}`).value);
-        const flavorAmount = (flavorPercent / 100) * bottleSize;
-        totalFlavorAmount += flavorAmount;
+        const flavorPercentInput = document.getElementById(`flavor_percent_${i}`);
+        if (flavorPercentInput) { // Ensure the element exists
+            const flavorPercent = parseFloat(flavorPercentInput.value);
+            if (isNaN(flavorPercent) || flavorPercent < 0) {
+                continue; // Skip invalid flavor percentages
+            }
+            const flavorAmount = (flavorPercent / 100) * bottleSize;
+            totalFlavorAmount += flavorAmount;
 
-        const flavorName = document.getElementById(`flavor_name_${i}`).value || 'Unnamed Flavor';
-        flavorText += `<strong>${flavorName}:</strong> ${flavorAmount.toFixed(2)} ml<br>`;
+            const flavorName = document.getElementById(`flavor_name_${i}`).value || 'Unnamed Flavor';
+            flavorText += `<strong>${flavorName}:</strong> ${flavorAmount.toFixed(2)} ml<br>`;
+        }
     }
+    console.log('Total Flavor Amount:', totalFlavorAmount);
 
     const pgAmount = (100 - vgRatio) / 100 * bottleSize - (totalNicotineNeeded + totalFlavorAmount);
     const vgAmount = (vgRatio / 100) * bottleSize;
+    console.log('PG Amount:', pgAmount);
+    console.log('VG Amount:', vgAmount);
 
     if (pgAmount < 0 || vgAmount < 0) {
         alert('The calculations result in negative values. Please check your inputs.');
@@ -93,6 +103,41 @@ function calculateResults() {
         <strong>VG Amount:</strong> ${vgAmount.toFixed(2)} ml
     `;
     document.getElementById('resultText').innerHTML = resultText;
+}
+
+function addFlavor() {
+    const container = document.getElementById('flavorsContainer');
+    flavorCount++;
+
+    const flavorDiv = document.createElement('div');
+    flavorDiv.classList.add('row');
+    flavorDiv.innerHTML = `
+        <div class="input-field col s12 m6">
+            <input id="flavor_name_${flavorCount}" type="text" class="autocomplete" placeholder="e.g., Vanilla, Strawberry, WS-23, WS-5">
+            <label for="flavor_name_${flavorCount}" class="active">Flavor Name</label>
+        </div>
+        <div class="input-field col s12 m6">
+            <input id="flavor_percent_${flavorCount}" type="number" class="validate" value="5">
+            <label for="flavor_percent_${flavorCount}" class="active">Flavor Percentage (%)</label>
+        </div>
+        <button type="button" class="btn waves-effect waves-light red" onclick="removeFlavor(${flavorCount})">Remove Flavor</button>
+    `;
+    container.appendChild(flavorDiv);
+
+    M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
+        data: flavorSuggestions.reduce((obj, flavor) => {
+            obj[flavor] = null;
+            return obj;
+        }, {})
+    });
+}
+
+function removeFlavor(flavorId) {
+    const flavorDiv = document.getElementById(`flavor_name_${flavorId}`).parentNode.parentNode;
+    flavorDiv.remove();
+    flavorCount--;
+    // Recalculate results after removing a flavor
+    calculateResults();
 }
 
 function saveRecipe() {
@@ -119,55 +164,43 @@ function saveRecipe() {
 function loadRecipe() {
     const savedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
     if (savedRecipes.length === 0) {
-        alert('No recipes saved.');
+        alert('No recipes found.');
         return;
     }
 
-    // Remove existing recipe select dropdown if it exists
-    const existingSelect = document.getElementById('recipeSelectContainer');
-    if (existingSelect) {
-        existingSelect.remove();
-    }
-
-    // Create new recipe select dropdown
-    const selectElement = document.createElement('select');
-    selectElement.id = 'recipeSelect';
-    selectElement.className = 'browser-default';
-
-    const options = savedRecipes.map((recipe, index) => 
-        `<option value="${index}">${recipe.flavors.map(f => f.name).join(', ')}</option>`
-    ).join('');
-    selectElement.innerHTML = options;
-
-    const container = document.createElement('div');
-    container.id = 'recipeSelectContainer';
-    container.innerHTML = `
-        ${selectElement.outerHTML}
-        <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply Recipe</button>
-    `;
-
-    document.getElementById('results').appendChild(container);
-    M.FormSelect.init(document.querySelectorAll('select'));
-}
-
-function applyRecipe() {
-    const selectedIndex = document.getElementById('recipeSelect').value;
-    const savedRecipes = JSON.parse(localStorage.getItem('recipes')) || [];
-    const recipe = savedRecipes[selectedIndex];
-
+    const recipe = savedRecipes[savedRecipes.length - 1]; // Load the most recent recipe
     document.getElementById('vg_ratio').value = recipe.vg_ratio;
     document.getElementById('nic_strength').value = recipe.nic_strength;
     document.getElementById('nic_base').value = recipe.nic_base;
     document.getElementById('bottle_size').value = recipe.bottle_size;
 
-    document.getElementById('flavorsContainer').innerHTML = '';
-    flavorCount = 0;
+    const container = document.getElementById('flavorsContainer');
+    container.innerHTML = ''; // Clear existing flavors
 
-    recipe.flavors.forEach(flavor => {
-        addFlavor();
-        document.getElementById(`flavor_name_${flavorCount}`).value = flavor.name;
-        document.getElementById(`flavor_percent_${flavorCount}`).value = flavor.percent;
+    recipe.flavors.forEach((flavor, index) => {
+        flavorCount++;
+        const flavorDiv = document.createElement('div');
+        flavorDiv.classList.add('row');
+        flavorDiv.innerHTML = `
+            <div class="input-field col s12 m6">
+                <input id="flavor_name_${flavorCount}" type="text" class="autocomplete" value="${flavor.name}">
+                <label for="flavor_name_${flavorCount}" class="active">Flavor Name</label>
+            </div>
+            <div class="input-field col s12 m6">
+                <input id="flavor_percent_${flavorCount}" type="number" class="validate" value="${flavor.percent}">
+                <label for="flavor_percent_${flavorCount}" class="active">Flavor Percentage (%)</label>
+            </div>
+            <button type="button" class="btn waves-effect waves-light red" onclick="removeFlavor(${flavorCount})">Remove Flavor</button>
+        `;
+        container.appendChild(flavorDiv);
     });
 
-    alert('Recipe applied!');
+    M.Autocomplete.init(document.querySelectorAll('.autocomplete'), {
+        data: flavorSuggestions.reduce((obj, flavor) => {
+            obj[flavor] = null;
+            return obj;
+        }, {})
+    });
+
+    alert('Recipe loaded!');
 }
