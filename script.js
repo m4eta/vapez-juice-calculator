@@ -284,21 +284,55 @@ function applyRecipe() {
     calculateResults();
 }
 
-function exportRecipes() {
+async function exportRecipes() {
     if (recipes.length === 0) {
         alert('No recipes to export.');
         return;
     }
 
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recipes, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "recipes.json");
-    document.body.appendChild(downloadAnchor); // Required for Firefox
-    downloadAnchor.click();
-    downloadAnchor.remove();
+    const dataStr = JSON.stringify(recipes, null, 2);
+    const defaultFileName = 'My Juice Recipes.json';
 
-    alert('Recipes exported!');
+    if ('showSaveFilePicker' in window) {
+        // File System Access API supported
+        try {
+            const fileHandle = await window.showSaveFilePicker({
+                suggestedName: defaultFileName,
+                types: [{
+                    description: 'JSON Files',
+                    accept: {
+                        'application/json': ['.json'],
+                    },
+                }],
+            });
+
+            const writableStream = await fileHandle.createWritable();
+            await writableStream.write(dataStr);
+            await writableStream.close();
+
+            alert('Recipes exported!');
+        } catch (err) {
+            console.error('Error exporting recipes:', err);
+            alert('An error occurred while exporting recipes.');
+        }
+    } else {
+        // Fallback for browsers not supporting the File System Access API
+        const userFileName = prompt('Enter a name for your file:', defaultFileName);
+
+        if (userFileName) {
+            const dataUri = "data:text/json;charset=utf-8," + encodeURIComponent(dataStr);
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataUri);
+            downloadAnchor.setAttribute("download", userFileName);
+            document.body.appendChild(downloadAnchor); // Required for Firefox
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            alert('Recipes exported!');
+        } else {
+            alert('Export cancelled.');
+        }
+    }
 }
 
 function deleteRecipe() {

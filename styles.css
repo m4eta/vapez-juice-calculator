@@ -80,3 +80,19 @@ select option {
     background-color: #333333; /* Dark grey for options */
     color: #ffffff; /* White text */
 }
+
+#mobile-menu {
+    text-align: center;
+}
+
+/* Green shade for the Calculate button */
+.center-btn {
+    display: block;
+    margin: 0 auto;
+    background-color: #4caf50; /* Light green shade */
+    color: #ffffff; /* White text color */
+}
+
+.center-btn:hover {
+    background-color: #388e3c; /* Darker green shade on hover */
+}
