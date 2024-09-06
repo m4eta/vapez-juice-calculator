@@ -1,4 +1,9 @@
 const flavorSuggestions = [
+    // Cooling
+    "WS-23",
+    "WS-5",
+    "Koolada",
+    
     // Capella
     "Vanilla Custard (Capella)",
     "Strawberry Ripe (Capella)",
