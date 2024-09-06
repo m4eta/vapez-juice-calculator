@@ -15,21 +15,20 @@
             <a href="#" class="brand-logo center">Vape Juice Calculator</a>
             <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
             <ul id="desktop-menu" class="right hide-on-med-and-down">
-                <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Go to Recipe Viewer</a></li>
+                <li><a href="ViewRecipes/index.html">Go to Recipe Viewer</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Side Nav for Mobile -->
     <ul id="mobile-menu" class="sidenav">
-        <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Go to Recipe Viewer</a></li>
+        <li><a href="ViewRecipes/index.html">Go to Recipe Viewer</a></li>
     </ul>
 
     <div class="container">
         <div class="center-align">
             <img src="https://images.unsplash.com/photo-1521956398032-5b2069340c1d" alt="Logo" class="section-image">
             <h1 class="title">Vape Juice Calculator</h1>
-
         </div>
         <div class="row">
             <form id="vapeForm" class="col s12">
@@ -57,7 +56,6 @@
                     <div class="input-field col s12">
                         <button type="button" class="btn waves-effect waves-light center-btn" onclick="calculateResults()">Calculate</button>
                     </div>
-
                 </div>
             </form>
         </div>
@@ -76,15 +74,16 @@
         </div>
 
         <!-- Recipe management buttons -->
-        <div id="saveLoadButtons">
+        <div class="button-group">
+            <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply</button>
             <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import Recipes</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply Recipe</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="deleteRecipe()">Delete</button>
         </div>
 
-        <div id="exportButtons">
-            <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export All Recipes (JSON)</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="deleteRecipe()">Delete Recipe</button>
+        <!-- Import and Export buttons -->
+        <div class="button-group">
+            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export</button>
         </div>
     </div>
 

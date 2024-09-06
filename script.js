@@ -53,7 +53,6 @@ const flavorSuggestions = [
     "Chocolate (FLV)"
 ];
 
-
 let flavorCount = 0;
 let recipes = [];
 
@@ -89,9 +88,6 @@ window.onload = function () {
         }, {})
     });
 };
-    // Initialize event listener for apply recipe button
-    document.getElementById('applyRecipeButton').addEventListener('click', applyRecipe);
-
 
 function addFlavor() {
     const container = document.getElementById('flavorsContainer');
@@ -108,7 +104,7 @@ function addFlavor() {
             <input id="flavor_percent_${flavorCount}" type="number" class="validate" value="5">
             <label for="flavor_percent_${flavorCount}" class="active">Flavor Percentage (%)</label>
         </div>
-        <button type="button" class="btn waves-effect waves-light red remove-flavor" data-id="${flavorCount}">Remove Flavor</button>
+        <button type="button" class="btn remove-flavor red" data-id="${flavorCount}">Remove Flavor</button>
     `;
     container.appendChild(flavorDiv);
 
@@ -122,7 +118,7 @@ function addFlavor() {
 }
 
 function removeFlavor(flavorId) {
-    const flavorDiv = document.getElementById(`flavor_name_${flavorId}`).parentNode.parentNode;
+    const flavorDiv = document.getElementById(`flavor_name_${flavorId}`).closest('.row');
     flavorDiv.remove();
     // Recalculate results after removing flavor
     calculateResults();
@@ -219,7 +215,6 @@ function saveRecipe() {
     alert('Recipe saved!');
 }
 
-
 function updateRecipeList(savedRecipes) {
     const recipeSelect = document.getElementById('savedRecipes');
     recipeSelect.innerHTML = '<option value="" disabled selected>Choose your recipe</option>';
@@ -243,17 +238,24 @@ function loadRecipe() {
         const reader = new FileReader();
 
         reader.onload = function (e) {
-            const jsonData = JSON.parse(e.target.result);
-            recipes = jsonData; // Set recipes with the data from the file
+            try {
+                const jsonData = JSON.parse(e.target.result);
+                recipes = jsonData; // Set recipes with the data from the file
 
-            alert('Recipes imported!');
-            updateRecipeList(recipes);
+                // Update the recipe list with imported recipes
+                updateRecipeList(recipes);
 
-            // Select the first recipe from the imported list
-            if (recipes.length > 0) {
-                const recipeSelect = document.getElementById('savedRecipes');
-                recipeSelect.value = 0; // Select the first recipe
-                M.FormSelect.init(recipeSelect); // Reinitialize Materialize select element
+                // Select the first recipe from the imported list
+                if (recipes.length > 0) {
+                    const recipeSelect = document.getElementById('savedRecipes');
+                    recipeSelect.value = 0; // Select the first recipe
+                    M.FormSelect.init(recipeSelect); // Reinitialize Materialize select element
+                }
+
+                alert('Recipes imported!');
+            } catch (err) {
+                console.error('Error parsing JSON:', err);
+                alert('Failed to import recipes. Please check the file format.');
             }
         };
 
@@ -263,78 +265,62 @@ function loadRecipe() {
     fileInput.click();
 }
 
+function exportRecipes() {
+    const blob = new Blob([JSON.stringify(recipes, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'recipes.json';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
 function applyRecipe() {
-    const selectedIndex = document.getElementById('savedRecipes').value;
-    const recipe = recipes[selectedIndex];
+    const selectedRecipeIndex = document.getElementById('savedRecipes').value;
+    if (selectedRecipeIndex === '') return;
+
+    const recipe = recipes[selectedRecipeIndex];
 
     document.getElementById('vg_ratio').value = recipe.vg_ratio;
     document.getElementById('nic_strength').value = recipe.nic_strength;
     document.getElementById('nic_base').value = recipe.nic_base;
     document.getElementById('bottle_size').value = recipe.bottle_size;
 
-    document.getElementById('flavorsContainer').innerHTML = '';
-    flavorCount = 0;
-
-    recipe.flavors.forEach(flavor => {
-        addFlavor();
-        document.getElementById(`flavor_name_${flavorCount}`).value = flavor.name;
-        document.getElementById(`flavor_percent_${flavorCount}`).value = flavor.percent;
+    recipe.flavors.forEach((flavor, index) => {
+        if (index < flavorCount) {
+            document.getElementById(`flavor_name_${index + 1}`).value = flavor.name;
+            document.getElementById(`flavor_percent_${index + 1}`).value = flavor.percent;
+        } else {
+            addFlavor();
+            document.getElementById(`flavor_name_${index + 1}`).value = flavor.name;
+            document.getElementById(`flavor_percent_${index + 1}`).value = flavor.percent;
+        }
     });
 
-    calculateResults();
+    alert('Recipe applied!');
 }
 
-async function exportRecipes() {
-    if (recipes.length === 0) {
-        alert('No recipes to export.');
-        return;
-    }
+function deleteRecipe() {
+    const selectedRecipeIndex = document.getElementById('savedRecipes').value;
+    if (selectedRecipeIndex === '') return;
 
-    const dataStr = JSON.stringify(recipes, null, 2);
-    const defaultFileName = 'My Juice Recipes.json';
+    recipes.splice(selectedRecipeIndex, 1);
+    updateRecipeList(recipes);
 
-    if ('showSaveFilePicker' in window) {
-        // File System Access API supported
-        try {
-            const fileHandle = await window.showSaveFilePicker({
-                suggestedName: defaultFileName,
-                types: [{
-                    description: 'JSON Files',
-                    accept: {
-                        'application/json': ['.json'],
-                    },
-                }],
-            });
+    // Clear the inputs if the recipe is deleted
+    document.getElementById('vg_ratio').value = '';
+    document.getElementById('nic_strength').value = '';
+    document.getElementById('nic_base').value = '';
+    document.getElementById('bottle_size').value = '';
+    document.getElementById('resultText').innerHTML = '';
 
-            const writableStream = await fileHandle.createWritable();
-            await writableStream.write(dataStr);
-            await writableStream.close();
+    // Remove all flavor inputs
+    const container = document.getElementById('flavorsContainer');
+    container.innerHTML = '';
+    flavorCount = 0;
 
-            alert('Recipes exported!');
-        } catch (err) {
-            console.error('Error exporting recipes:', err);
-            alert('An error occurred while exporting recipes.');
-        }
-    } else {
-        // Fallback for browsers not supporting the File System Access API
-        const userFileName = prompt('Enter a name for your file:', defaultFileName);
-
-        if (userFileName) {
-            const dataUri = "data:text/json;charset=utf-8," + encodeURIComponent(dataStr);
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataUri);
-            downloadAnchor.setAttribute("download", userFileName);
-            document.body.appendChild(downloadAnchor); // Required for Firefox
-            downloadAnchor.click();
-            downloadAnchor.remove();
-
-            alert('Recipes exported!');
-        } else {
-            alert('Export cancelled.');
-        }
-    }
+    alert('Recipe deleted!');
 }
-
 function deleteRecipe() {
     const selectedIndex = document.getElementById('savedRecipes').value;
 

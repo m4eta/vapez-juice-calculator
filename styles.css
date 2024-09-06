@@ -53,6 +53,7 @@ body {
 .btn {
     background-color: #e91e63; /* Material Pink */
     color: #ffffff; /* White text */
+    margin: 5px; /* Padding around buttons */
 }
 
 .btn:hover {
@@ -64,6 +65,14 @@ body {
     margin-top: 20px;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap; /* Ensure buttons wrap if there's not enough space */
+}
+
+.button-group {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Ensure buttons wrap if there's not enough space */
 }
 
 #savedRecipesContainer {
