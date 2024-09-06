@@ -6,54 +6,7 @@
     <title>Vape Juice Calculator</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            background-color: #2e2e2e; /* Dark grey background */
-            color: #ffffff; /* White text */
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .container {
-            width: 90%;
-            max-width: 800px;
-            background-color: #333333; /* Slightly lighter dark grey */
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .title {
-            font-weight: 700;
-            color: #e91e63; /* Material Pink */
-            text-align: center;
-        }
-        .btn {
-            background-color: #6200ea; /* Material Indigo */
-            color: #ffffff;
-        }
-        .btn:hover {
-            background-color: #3700b3; /* Darker Indigo */
-        }
-        .results {
-            margin-top: 30px;
-            background-color: #424242; /* Slightly lighter dark grey */
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .card-panel {
-            background-color: #333333; /* Dark grey for contrast */
-            color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .section-image {
-            border-radius: 8px;
-            display: block;
-            margin: 0 auto;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -65,28 +18,24 @@
             <form id="vapeForm" class="col s12">
                 <div class="row">
                     <div class="input-field col s12 m6">
-                        <input id="juice_name" type="text" class="validate" value="Flavor Shot">
-                        <label for="juice_name">Juice Name</label>
+                        <input id="vg_ratio" type="number" class="validate" value="70">
+                        <label for="vg_ratio" class="active">VG Ratio (%)</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input id="vg_ratio" type="text" class="validate" value="70">
-                        <label for="vg_ratio">VG Ratio (%)</label>
+                        <input id="nic_strength" type="number" class="validate" value="6">
+                        <label for="nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input id="nic_strength" type="text" class="validate" value="6">
-                        <label for="nic_strength">Desired Nicotine Strength (mg/mL)</label>
+                        <input id="nic_base" type="number" class="validate" value="100">
+                        <label for="nic_base" class="active">Nicotine Base Concentration (mg/mL)</label>
                     </div>
                     <div class="input-field col s12 m6">
-                        <input id="nic_base" type="text" class="validate" value="100">
-                        <label for="nic_base">Nicotine Base Concentration (mg/mL)</label>
+                        <input id="bottle_size" type="number" class="validate" value="30">
+                        <label for="bottle_size" class="active">Bottle Size (ml)</label>
                     </div>
-                    <div class="input-field col s12 m6">
-                        <input id="bottle_size" type="text" class="validate" value="30">
-                        <label for="bottle_size">Bottle Size (ml)</label>
-                    </div>
-                    <div class="input-field col s12 m6">
-                        <input id="flavor_percent" type="text" class="validate" value="10">
-                        <label for="flavor_percent">Flavor Percentage (%)</label>
+                    <div id="flavorsContainer"></div>
+                    <div class="input-field col s12">
+                        <button type="button" class="btn waves-effect waves-light" onclick="addFlavor()">Add Flavor</button>
                     </div>
                     <div class="input-field col s12">
                         <button type="button" class="btn waves-effect waves-light" onclick="calculateResults()">Calculate</button>
@@ -98,38 +47,13 @@
             <h2>Results</h2>
             <p id="resultText" class="card-panel">Your results will be displayed here.</p>
         </div>
+        <div id="saveLoadButtons">
+            <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
+            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Load Recipe</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        function calculateResults() {
-            const juiceName = document.getElementById('juice_name').value;
-            const vgRatio = parseFloat(document.getElementById('vg_ratio').value);
-            const nicStrength = parseFloat(document.getElementById('nic_strength').value);
-            const nicBase = parseFloat(document.getElementById('nic_base').value);
-            const bottleSize = parseFloat(document.getElementById('bottle_size').value);
-            const flavorPercent = parseFloat(document.getElementById('flavor_percent').value);
-
-            if (isNaN(vgRatio) || isNaN(nicStrength) || isNaN(nicBase) || isNaN(bottleSize) || isNaN(flavorPercent)) {
-                alert('Please enter valid numbers.');
-                return;
-            }
-
-            const flavorAmount = (flavorPercent / 100) * bottleSize;
-            const totalNicotineNeeded = (nicStrength * bottleSize) / nicBase;
-            const totalPGNeeded = totalNicotineNeeded + flavorAmount;
-            const vgAmount = (vgRatio / 100) * bottleSize;
-            const pgAmount = bottleSize - vgAmount - totalPGNeeded; // Total PG minus nicotine base and flavor amount
-
-            const resultText = `
-                <strong>Juice Name:</strong> ${juiceName}<br>
-                <strong>VG Amount:</strong> ${vgAmount.toFixed(2)} ml<br>
-                <strong>PG Amount:</strong> ${pgAmount.toFixed(2)} ml<br>
-                <strong>Flavor Amount:</strong> ${flavorAmount.toFixed(2)} ml<br>
-                <strong>Total Nicotine Base Needed:</strong> ${totalNicotineNeeded.toFixed(2)} ml
-            `;
-            document.getElementById('resultText').innerHTML = resultText;
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
