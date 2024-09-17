@@ -220,6 +220,8 @@ function saveRecipe() {
     alert('Recipe saved!');
 }
 
+
+
 function updateRecipeList(savedRecipes) {
     const recipeSelect = document.getElementById('savedRecipes');
     recipeSelect.innerHTML = '<option value="" disabled selected>Choose your recipe</option>';
@@ -245,19 +247,20 @@ function loadRecipe() {
         reader.onload = function (e) {
             try {
                 const jsonData = JSON.parse(e.target.result);
-                recipes = jsonData; // Set recipes with the data from the file
+                // Merge the imported recipes with the existing ones
+                recipes = [...recipes, ...jsonData];
 
-                // Update the recipe list with imported recipes
+                // Update the recipe list with merged recipes
                 updateRecipeList(recipes);
 
-                // Select the first recipe from the imported list
+                // Select the first recipe from the updated list if any
                 if (recipes.length > 0) {
                     const recipeSelect = document.getElementById('savedRecipes');
-                    recipeSelect.value = 0; // Select the first recipe
+                    recipeSelect.value = 0; // Optionally select the first recipe
                     M.FormSelect.init(recipeSelect); // Reinitialize Materialize select element
                 }
 
-                alert('Recipes imported!');
+                alert('Recipes imported and merged!');
             } catch (err) {
                 console.error('Error parsing JSON:', err);
                 alert('Failed to import recipes. Please check the file format.');
@@ -269,6 +272,8 @@ function loadRecipe() {
 
     fileInput.click();
 }
+
+
 
 function exportRecipes() {
     const blob = new Blob([JSON.stringify(recipes, null, 2)], { type: 'application/json' });

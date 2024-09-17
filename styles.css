@@ -6,13 +6,26 @@ body {
     overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
+header {
+    background-color: #1c1c1c; /* Dark header background */
+}
+
+.navbar {
+    padding: 0 20px;
+}
+
+.nav-wrapper .brand-logo {
+    font-size: 1.8em;
+    color: #e91e63; /* Material Pink */
+}
+
 .container {
     width: 90%;
     max-width: 800px;
     background-color: #333333; /* Slightly lighter dark grey */
     padding: 20px;
     border-radius: 8px;
-    margin-top: 60px; /* Space for sticky header */
+    margin-top: 20px;
 }
 
 .title {
@@ -21,24 +34,8 @@ body {
     text-align: center;
 }
 
-.results {
-    margin-top: 30px;
-    background-color: #424242; /* Slightly lighter dark grey */
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.card-panel {
-    background-color: #333333; /* Dark grey for contrast */
-    color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-}
-
-.section-image {
-    border-radius: 8px;
-    display: block;
-    margin: 0 auto;
+.input-group {
+    margin-bottom: 20px;
 }
 
 .input-field input {
@@ -60,23 +57,25 @@ body {
     background-color: #d81b60; /* Darker pink on hover */
 }
 
-#saveLoadButtons,
-#exportButtons {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap; /* Ensure buttons wrap if there's not enough space */
-}
-
 .button-group {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     flex-wrap: wrap; /* Ensure buttons wrap if there's not enough space */
 }
 
-#savedRecipesContainer {
+#results {
     margin-top: 20px;
+    background-color: #424242; /* Slightly lighter dark grey */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.card-panel {
+    background-color: #333333; /* Dark grey for contrast */
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 select {
@@ -90,14 +89,7 @@ select option {
     color: #ffffff; /* White text */
 }
 
-#mobile-menu {
-    text-align: center;
-}
-
-/* Green shade for the Calculate button */
 .center-btn {
-    display: block;
-    margin: 0 auto;
     background-color: #4caf50; /* Light green shade */
     color: #ffffff; /* White text color */
 }

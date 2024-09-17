@@ -9,82 +9,77 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navbar for Desktop -->
-    <nav>
-        <div class="nav-wrapper">
-            <a href="#" class="brand-logo center">Vape Juice</a>
-            <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">Menu</i></a>
-            <ul id="desktop-menu" class="right hide-on-med-and-down">
-                <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Go to Recipe Viewer</a></li>
-            </ul>
-        </div>
-    </nav>
+    <header>
+        <nav class="navbar">
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo">Vape Juice</a>
+                <ul id="desktop-menu" class="right hide-on-med-and-down">
+                    <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Recipe Viewer</a></li>
+                </ul>
+                <a href="#" data-target="mobile-menu" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            </div>
+        </nav>
+        <ul id="mobile-menu" class="sidenav">
+            <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Recipe Viewer</a></li>
+        </ul>
+    </header>
 
-    <!-- Side Nav for Mobile -->
-    <ul id="mobile-menu" class="sidenav">
-        <li><a href="https://m4eta.github.io/Juice-Recipe-Viewerz/">Go to Recipe Viewer</a></li>
-    </ul>
-
-    <div class="container">
-        <div class="center-align">
+    <main>
+        <div class="container">
             <h1 class="title">Vape Juice Calculator</h1>
-        </div>
-        <div class="row">
-            <form id="vapeForm" class="col s12">
-                <div class="row">
-                    <div class="input-field col s12 m6">
+            <form id="vapeForm">
+                <div class="input-group">
+                    <div class="input-field">
                         <input id="vg_ratio" type="number" class="validate" value="70">
-                        <label for="vg_ratio" class="active">VG Ratio (%)</label>
+                        <label for="vg_ratio">VG Ratio (%)</label>
                     </div>
-                    <div class="input-field col s12 m6">
+                    <div class="input-field">
                         <input id="nic_strength" type="number" class="validate" value="6">
-                        <label for="nic_strength" class="active">Desired Nicotine Strength (mg/mL)</label>
+                        <label for="nic_strength">Nicotine Strength (mg/mL)</label>
                     </div>
-                    <div class="input-field col s12 m6">
+                    <div class="input-field">
                         <input id="nic_base" type="number" class="validate" value="100">
-                        <label for="nic_base" class="active">Nicotine Base Concentration (mg/mL)</label>
+                        <label for="nic_base">Nicotine Base Concentration (mg/mL)</label>
                     </div>
-                    <div class="input-field col s12 m6">
+                    <div class="input-field">
                         <input id="bottle_size" type="number" class="validate" value="30">
-                        <label for="bottle_size" class="active">Bottle Size (ml)</label>
+                        <label for="bottle_size">Bottle Size (ml)</label>
                     </div>
-                    <div id="flavorsContainer"></div>
-                    <div class="input-field col s12">
-                        <button type="button" class="btn waves-effect waves-light" onclick="addFlavor()">Add Flavor</button>
-                    </div>
-                    <div class="input-field col s12">
-                        <button type="button" class="btn waves-effect waves-light center-btn" onclick="calculateResults()">Calculate</button>
-                    </div>
+                </div>
+
+                <div id="flavorsContainer"></div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn waves-effect waves-light" onclick="addFlavor()">Add Flavor</button>
+                    <button type="button" class="btn waves-effect waves-light center-btn" onclick="calculateResults()">Calculate</button>
+                </div>
+                
+                <div id="results" class="results">
+                    <h2>Results</h2>
+                    <p id="resultText" class="card-panel">Your results will be displayed here.</p>
+                </div>
+
+                <div class="button-group">
+                    <label for="savedRecipes">Saved Recipes</label>
+                    <select id="savedRecipes" class="browser-default">
+                        <option value="" disabled selected>Choose your recipe</option>
+                        <!-- Options will be added dynamically -->
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply Recipe</button>
+                    <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
+                    <button type="button" class="btn waves-effect waves-light" onclick="deleteRecipe()">Delete Recipe</button>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import Recipes</button>
+                    <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export Recipes</button>
                 </div>
             </form>
         </div>
-        <div id="results" class="results">
-            <h2>Results</h2>
-            <p id="resultText" class="card-panel">Your results will be displayed here.</p>
-        </div>
-
-        <!-- Saved Recipes Dropdown -->
-        <div id="savedRecipesContainer">
-            <label for="savedRecipes">Saved Recipes</label>
-            <select id="savedRecipes" class="browser-default">
-                <option value="" disabled selected>Choose your recipe</option>
-                <!-- Options will be added dynamically -->
-            </select>
-        </div>
-
-        <!-- Recipe management buttons -->
-        <div class="button-group">
-            <button type="button" class="btn waves-effect waves-light" onclick="applyRecipe()">Apply</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="saveRecipe()">Save Recipe</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="deleteRecipe()">Delete</button>
-        </div>
-
-        <!-- Import and Export buttons -->
-        <div class="button-group">
-            <button type="button" class="btn waves-effect waves-light" onclick="loadRecipe()">Import</button>
-            <button type="button" class="btn waves-effect waves-light" onclick="exportRecipes()">Export</button>
-        </div>
-    </div>
+    </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script>
